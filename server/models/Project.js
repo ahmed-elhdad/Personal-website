@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 const projectSchema = mongoose.Schema({
   title: {
     type: String,
-    required: True,
+    required: true,
   },
   description: {
     type: String,
-    required: True,
+    required: true,
   },
   images: {
     images: { type: Array, required: true },
@@ -16,7 +16,7 @@ const projectSchema = mongoose.Schema({
     default: 0,
   },
   tages: [],
-  order: { type: Number, required: False, default: 0 },
+  order: { type: Number, required: false, default: 0 },
   start_data: {
     type: Date,
   },
@@ -25,3 +25,4 @@ const projectSchema = mongoose.Schema({
     default: Date.now(),
   },
 });
+export default mongoose.model("project", projectSchema);
