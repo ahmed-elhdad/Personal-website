@@ -74,6 +74,24 @@ export class ProjectService {
   async get(data, res) {
     try {
       // If get the id will get a specific item if not reverce
+      const { id } = data.params;
+      if (id == "all") {
+        const projects = Project.find({});
+        return res
+          .status(201)
+          .json({ message: "projects getted successfully", data: projects });
+      }
+      const isValidId = mongoose.Types.ObjectId.isValid(id);
+      if (!isValidId) {
+        return res.status(401).json({ error: "valid project ID" });
+      }
+      const project = Project.findOne({ _id: id });
+      if (!project) {
+        return res.status(404).json({ error: "project not found" });
+      }
+      res
+        .status(201)
+        .json({ message: "project gets successfully", data: project });
     } catch (error) {
       res.status(501).json({ error: error });
     }
