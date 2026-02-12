@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import Project from "../models/Project.js";
 
 export class ProjectService {
@@ -98,6 +98,16 @@ export class ProjectService {
   }
   async remove(data, res) {
     try {
+      const { id } = data.params;
+      if (!id) {
+        return res.status(404).json({ error: "id required" });
+      }
+      const isValidId = mongoose.Types.ObjectId.isValid(id);
+      if (!isValidId) {
+        return res.status(401).json({ error: "valid id" });
+      }
+      await Project.findOneAndDelete({ _id: id });
+      res.status(201).json({ message: "project successfully deleted" });
     } catch (error) {
       res.status(501).json({ error: error });
     }
