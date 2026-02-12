@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Project from "../models/Project.js";
 
 export class ProjectService {
@@ -44,6 +45,28 @@ export class ProjectService {
   }
   async edit(data, res) {
     try {
+      const { title, description, end_at, order } = data.body,
+        { id } = data.params,
+        isValidId = mongoose.Types.ObjectId.isValid(id);
+      if (!isValidId) {
+        return res.status(401).json({ error: "Valid Project ID" });
+      }
+      const project = Project.findOne({ _id: id });
+      if (!project) {
+        return res.status(404).json({ error: "project not found" });
+      }
+      // Update the project data(title, description, order, end_at)
+      project.findOneAndUpdate(
+        { _id: id },
+        {
+          title: title ? title : project.title,
+          description: description ? description : project.description,
+          end_at: end_at ? end_at : project.end_at,
+          order: order ? order : project.order,
+        },
+      );
+      await project.save();
+      res.status(201).json({ message: "project updated successfully" });
     } catch (error) {
       res.status(501).json({ error: error });
     }

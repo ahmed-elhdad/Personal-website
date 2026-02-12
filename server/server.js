@@ -8,8 +8,8 @@ app.use(express.json);
 app.use(cookieBarser);
 app.use(cors);
 connectDB();
-app.use(projectRoutrs);
+app.use("/api/v1/projects", projectRoutrs);
 const PORT = 5000;
 app.listen(PORT, (req, res) => {
-  console.log(`http://localhost:${PORT}`);
+  console.log(`http://localhost:${PORT}/api/v1`);
 });
