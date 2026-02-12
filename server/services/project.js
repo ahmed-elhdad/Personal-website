@@ -46,8 +46,11 @@ export class ProjectService {
   async edit(data, res) {
     try {
       const { title, description, end_at, order } = data.body,
-        { id } = data.params,
-        isValidId = mongoose.Types.ObjectId.isValid(id);
+        { id } = data.params;
+      if (!id) {
+        return res.status(404).json({ error: "ID required" });
+      }
+      const isValidId = mongoose.Types.ObjectId.isValid(id);
       if (!isValidId) {
         return res.status(401).json({ error: "Valid Project ID" });
       }
@@ -73,8 +76,10 @@ export class ProjectService {
   }
   async get(data, res) {
     try {
-      // If get the id will get a specific item if not reverce
       const { id } = data.params;
+      if (!id) {
+        return res.status(404).json({ error: "ID required" });
+      }
       if (id == "all") {
         const projects = Project.find({});
         return res
