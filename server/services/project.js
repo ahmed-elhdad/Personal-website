@@ -119,12 +119,42 @@ export class ProjectService {
   }
   async love(data, res) {
     try {
+      const { id } = data.params;
+      if (!id) {
+        return res.status(404).json({ error: "ID required" });
+      }
+      const isValidId = mongoose.Types.ObjectId.isValid(id);
+      if (!isValidId) {
+        return res.status(401).json({ error: "valid project id" });
+      }
+      const project = await Project.findOne({ _id: id });
+      if (!project) {
+        return res.status(404).json({ error: "Project not found" });
+      }
+      await Project.findOneAndUpdate({ _id: id }, { loves: project.loves + 1 });
+      await project.save();
+      res.status(201).json({ message: "loved" });
     } catch (error) {
       res.status(501).json({ error: error });
     }
   }
   async unLove(data, res) {
     try {
+      const { id } = data.params;
+      if (!id) {
+        return res.status(404).json({ error: "ID required" });
+      }
+      const isValidId = mongoose.Types.ObjectId.isValid(id);
+      if (!isValidId) {
+        return res.status(401).json({ error: "valid project id" });
+      }
+      const project = await Project.findOne({ _id: id });
+      if (!project) {
+        return res.status(404).json({ error: "Project not found" });
+      }
+      await Project.findOneAndUpdate({ _id: id }, { loves: project.loves - 1 });
+      await project.save();
+      res.status(201).json({ message: "unloved" });
     } catch (error) {
       res.status(501).json({ error: error });
     }
