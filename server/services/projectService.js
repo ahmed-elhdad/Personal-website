@@ -9,7 +9,7 @@ function getAll() {
   const projects = readJSON(PROJECTS_FILE, []);
   return { projects, total: projects.length };
 }
-
+ 
 /**
  * Return a single project by id.
  * Throws 404 if not found.

@@ -1,0 +1,65 @@
+[
+  {
+    "id": "7ff7c211-511a-404d-9ebf-f0f45d0f164a",
+    "category": "Frontend",
+    "icon": "🎨",
+    "skills": [
+      "React",
+      "Next.js",
+      "TypeScript",
+      "JavaScript",
+      "Tailwind CSS",
+      "HTML5",
+      "CSS3"
+    ]
+  },
+  {
+    "id": "122a6cae-8602-4e27-a507-562437832473",
+    "category": "Backend",
+    "icon": "⚙️",
+    "skills": [
+      "Node.js",
+      "Express",
+      "Python",
+      "REST APIs",
+      "GraphQL",
+      "JWT Auth"
+    ]
+  },
+  {
+    "id": "81424785-2562-400c-96fa-2364e5be0940",
+    "category": "DevOps & Cloud",
+    "icon": "☁️",
+    "skills": [
+      "Docker",
+      "AWS",
+      "Git",
+      "CI/CD",
+      "Linux",
+      "Nginx"
+    ]
+  },
+  {
+    "id": "9d255a3e-03a6-462a-a629-f1fd63c8869e",
+    "category": "Databases",
+    "icon": "🗄️",
+    "skills": [
+      "PostgreSQL",
+      "MongoDB",
+      "Redis",
+      "MySQL"
+    ]
+  },
+  {
+    "id": "fea17344-2a6e-4621-8f1d-aa7802636f7d",
+    "category": "Tools",
+    "icon": "🛠️",
+    "skills": [
+      "VS Code",
+      "Figma",
+      "Postman",
+      "Jest",
+      "Agile/Scrum"
+    ]
+  }
+]

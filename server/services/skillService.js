@@ -9,7 +9,7 @@ function getAll() {
   const skills = readJSON(SKILLS_FILE, []);
   return { skills };
 }
-
+ 
 /**
  * Add a skill to an existing category, or create a new category.
  * Silently ignores duplicates within the same category.
