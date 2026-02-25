@@ -1,15 +1,45 @@
-import cors from "cors";
-import express from "express";
-import projectRoutrs from "./routes/project.js";
-import cookieBarser from "cookie-parser";
-import { connectDB } from "./config/DB.js";
+const express = require('express');
+const cors    = require('cors');
+const path    = require('path');
+
+const config           = require('./config');
+const { init }         = require('./config/db');
+const { errorHandler } = require('./middleware/errorHandler');
+
+const authRoutes    = require('./routes/auth');
+const projectRoutes = require('./routes/projects');
+const skillRoutes   = require('./routes/skills');
+const cvRoutes      = require('./routes/cv');
+
+// ─── Initialise storage ───────────────────────────────────────────────────────
+init();
+
+// ─── App ──────────────────────────────────────────────────────────────────────
 const app = express();
-app.use(express.json);
-app.use(cookieBarser);
-app.use(cors);
-connectDB();
-app.use("/api/v1/projects/", projectRoutrs);
-const PORT = 5000;
-app.listen(PORT, (req, res) => {
-  console.log(`http://localhost:${PORT}/api/v1`);
+
+// ─── Core middleware ──────────────────────────────────────────────────────────
+app.use(cors({ origin: config.clientUrl, credentials: true }));
+app.use(express.json());
+app.use('/uploads', express.static(config.paths.uploadsDir));
+
+// ─── Routes ───────────────────────────────────────────────────────────────────
+app.get('/api/health', (_req, res) =>
+  res.json({ status: 'ok', timestamp: new Date() })
+);
+
+app.use('/api/auth',     authRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/skills',   skillRoutes);
+app.use('/api/cv',       cvRoutes);
+
+// ─── Global error handler (must be last) ─────────────────────────────────────
+app.use(errorHandler);
+
+// ─── Start ────────────────────────────────────────────────────────────────────
+app.listen(config.port, () => {
+  console.log(`\n🚀 Portfolio API  →  http://localhost:${config.port}`);
+  console.log(`📧 Admin email   :  ${config.admin.email}`);
+  console.log(`🔑 Default pass  :  Admin@123!  (change via ADMIN_PASSWORD_HASH)\n`);
 });
+
+module.exports = app;
