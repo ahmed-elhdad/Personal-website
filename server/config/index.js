@@ -11,12 +11,10 @@ const config = {
   },
 
   admin: {
-    email: process.env.ADMIN_EMAIL || "admin@portfolio.com",
+    email: process.env.ADMIN_EMAIL,
     // bcrypt hash of "Admin@123!" — override via ADMIN_PASSWORD_HASH env var
     // Generate a new one: node -e "require('bcryptjs').hash('NewPass',10).then(console.log)"
-    passwordHash:
-      process.env.ADMIN_PASSWORD_HASH ||
-      "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+    passwordHash: process.env.ADMIN_PASSWORD_HASH,
   },
 
   paths: {

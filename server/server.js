@@ -12,6 +12,7 @@ const skillRoutes = require("./routes/skills");
 const cvRoutes = require("./routes/cv");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
+const bcryptjs = require("bcryptjs");
 
 // ─── Initialise storage ───────────────────────────────────────────────────────
 init();
@@ -29,10 +30,10 @@ app.get("/api/health", (_req, res) =>
   res.json({ status: "ok", timestamp: new Date() }),
 );
 
-app.use("/api/auth", authRoutes);
-app.use("/api/projects", projectRoutes);
-app.use("/api/skills", skillRoutes);
-app.use("/api/cv", cvRoutes);
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/projects", projectRoutes);
+app.use("/api/v1/skills", skillRoutes);
+app.use("/api/v1/cv", cvRoutes);
 
 // Swagger API documentation
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
@@ -41,12 +42,14 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(errorHandler);
 
 // ─── Start ────────────────────────────────────────────────────────────────────
-app.listen(config.port, () => {
+app.listen(config.port, async () => {
   console.log(`\n🚀 Portfolio API  →  http://localhost:${config.port}`);
   console.log(`📧 Admin email   :  ${config.admin.email}`);
   console.log(
     `🔑 Default pass  :  Admin@123!  (change via ADMIN_PASSWORD_HASH)\n`,
   );
+  console.log("JWT Secret:", config.jwt.secret);
+
   console.log(
     "📚 API docs      :  http://localhost:%d/api-docs\n",
     config.port,

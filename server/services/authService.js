@@ -1,6 +1,6 @@
-const jwt    = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const config = require('../config');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const config = require("../config");
 
 const { secret, expiresIn } = config.jwt;
 const { email: adminEmail, passwordHash } = config.admin;
@@ -15,29 +15,28 @@ const { email: adminEmail, passwordHash } = config.admin;
  */
 async function login(email, password) {
   if (!email || !password) {
-    const err = new Error('Email and password are required');
+    const err = new Error("Email and password are required");
     err.status = 400;
     throw err;
   }
-
+  email.trim();
+  adminEmail.trim();
   if (email.toLowerCase() !== adminEmail.toLowerCase()) {
-    const err = new Error('Invalid credentials');
+    const err = new Error("dafdsInvalid credentials");
     err.status = 401;
     throw err;
   }
 
   const valid = await bcrypt.compare(password, passwordHash);
   if (!valid) {
-    const err = new Error('Invalid credentials');
+    const err = new Error("Invalid credentials");
     err.status = 401;
     throw err;
   }
 
-  const token = jwt.sign(
-    { email: adminEmail, role: 'admin' },
-    secret,
-    { expiresIn }
-  );
+  const token = jwt.sign({ email: adminEmail, role: "admin" }, secret, {
+    expiresIn,
+  });
 
   return { token };
 }

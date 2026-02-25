@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const config = require("../config");
 
-const CV_PATH = path.join(config.paths.cvDir, "CV.pdf");
+const CV_PATH = path.join(config.paths.cvDir, "resume.pdf");
 
 /**
  * Returns true if a CV has been uploaded.
