@@ -40,8 +40,6 @@ async function start() {
   // ─── Listen ───────────────────────────────────────────────────────────────
   app.listen(config.port, () => {
     console.log(`\n🚀 Portfolio API  →  http://localhost:${config.port}`);
-    console.log(`📧 Admin email   :  ${config.admin.email}`);
-    console.log(`🔑 Default pass  :  Admin@123!  (change via ADMIN_PASSWORD_HASH)\n`);
   });
 }
 
