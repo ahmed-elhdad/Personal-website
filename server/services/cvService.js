@@ -1,8 +1,8 @@
-const fs = require("fs");
-const path = require("path");
-const config = require("../config");
+const fs   = require('fs');
+const path = require('path');
+const config = require('../config');
 
-const CV_PATH = path.join(config.paths.cvDir, "resume.pdf");
+const CV_PATH = path.join(config.paths.cvDir, 'resume.pdf');
 
 /**
  * Returns true if a CV has been uploaded.
@@ -19,9 +19,7 @@ function exists() {
  */
 function getPath() {
   if (!exists()) {
-    const err = new Error(
-      "CV not found. Please upload it via the admin panel.",
-    );
+    const err = new Error('CV not found. Please upload it via the admin panel.');
     err.status = 404;
     throw err;
   }

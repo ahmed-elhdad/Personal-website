@@ -1,23 +1,21 @@
-const { v4: uuidv4 } = require('uuid');
-const { readJSON, writeJSON, PROJECTS_FILE } = require('../config/db');
+const Project = require('../models/Project');
 
 /**
- * Return all projects, newest first.
- * @returns {{ projects: object[], total: number }}
+ * Return all projects sorted newest first.
+ * @returns {Promise<{ projects: object[], total: number }>}
  */
-function getAll() {
-  const projects = readJSON(PROJECTS_FILE, []);
+async function getAll() {
+  const projects = await Project.find().sort({ createdAt: -1 }).lean({ virtuals: true });
   return { projects, total: projects.length };
 }
- 
+
 /**
- * Return a single project by id.
+ * Return a single project by MongoDB _id.
  * Throws 404 if not found.
  * @param {string} id
  */
-function getById(id) {
-  const projects = readJSON(PROJECTS_FILE, []);
-  const project  = projects.find(p => p.id === id);
+async function getById(id) {
+  const project = await Project.findById(id).lean({ virtuals: true });
   if (!project) {
     const err = new Error('Project not found');
     err.status = 404;
@@ -27,85 +25,73 @@ function getById(id) {
 }
 
 /**
- * Create a new project and persist it.
+ * Create and persist a new project.
  * @param {object} fields
- * @param {string|null} thumbnailFilename  - filename from multer, if any
- * @returns {{ project: object }}
+ * @param {string|null} thumbnailFilename
+ * @returns {Promise<{ project: object }>}
  */
-function create({ title, description, tech, github, live, emoji }, thumbnailFilename) {
+async function create({ title, description, tech, github, live, emoji }, thumbnailFilename) {
   if (!title || !description) {
     const err = new Error('Title and description are required');
     err.status = 400;
     throw err;
   }
 
-  const now      = new Date().toISOString();
-  const projects = readJSON(PROJECTS_FILE, []);
-
-  const project = {
-    id:          uuidv4(),
+  const project = await Project.create({
     title,
     description,
-    tech:        parseTech(tech),
-    github:      github || null,
-    live:        live   || null,
-    emoji:       emoji  || '💻',
-    thumbnail:   thumbnailFilename ? `/uploads/${thumbnailFilename}` : null,
-    createdAt:   now,
-    updatedAt:   now,
-  };
+    tech:      parseTech(tech),
+    github:    github    || null,
+    live:      live      || null,
+    emoji:     emoji     || '💻',
+    thumbnail: thumbnailFilename ? `/uploads/${thumbnailFilename}` : null,
+  });
 
-  projects.unshift(project);          // newest first
-  writeJSON(PROJECTS_FILE, projects);
-  return { project };
+  return { project: project.toJSON() };
 }
 
 /**
- * Update an existing project.
+ * Update an existing project (partial update).
  * @param {string} id
  * @param {object} fields
- * @returns {{ project: object }}
+ * @returns {Promise<{ project: object }>}
  */
-function update(id, { title, description, tech, github, live, emoji }) {
-  const projects = readJSON(PROJECTS_FILE, []);
-  const idx      = projects.findIndex(p => p.id === id);
-
-  if (idx === -1) {
-    const err = new Error('Project not found');
-    err.status = 404;
-    throw err;
-  }
-
-  projects[idx] = {
-    ...projects[idx],
+async function update(id, { title, description, tech, github, live, emoji }) {
+  const changes = {
     ...(title       && { title }),
     ...(description && { description }),
     ...(tech        && { tech: parseTech(tech) }),
     ...(github !== undefined && { github }),
     ...(live   !== undefined && { live }),
     ...(emoji       && { emoji }),
-    updatedAt: new Date().toISOString(),
   };
 
-  writeJSON(PROJECTS_FILE, projects);
-  return { project: projects[idx] };
+  const project = await Project.findByIdAndUpdate(
+    id,
+    { $set: changes },
+    { new: true, runValidators: true }
+  ).lean({ virtuals: true });
+
+  if (!project) {
+    const err = new Error('Project not found');
+    err.status = 404;
+    throw err;
+  }
+
+  return { project };
 }
 
 /**
  * Delete a project by id.
  * @param {string} id
  */
-function remove(id) {
-  const projects = readJSON(PROJECTS_FILE, []);
-  const filtered = projects.filter(p => p.id !== id);
-
-  if (filtered.length === projects.length) {
+async function remove(id) {
+  const result = await Project.findByIdAndDelete(id);
+  if (!result) {
     const err = new Error('Project not found');
     err.status = 404;
     throw err;
   }
-
-  writeJSON(PROJECTS_FILE, filtered);
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────

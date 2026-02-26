@@ -59,7 +59,7 @@ export default function Hero({ projectCount }) {
           <span className="block"
                 style={{ background: 'linear-gradient(180deg,#fff 35%,rgba(255,255,255,0.42))',
                          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-            Ahmed Mohamed
+            Your Name
           </span>
           <span className="block"
                 style={{ background: 'linear-gradient(135deg,#64ffda 0%,#818cf8 100%)',
@@ -73,7 +73,7 @@ export default function Hero({ projectCount }) {
           className="text-[1.05rem] font-light leading-[1.75] max-w-[460px] mb-9"
           style={{ color: '#94a3b8' }}>
           I craft exceptional digital experiences — scalable backends,
-          pixel-perfect interfaces, and elegant architectures that stand the test of time. Build ML Classifier Models
+          pixel-perfect interfaces, and elegant architectures that stand the test of time.
         </motion.p>
 
         {/* CTAs */}

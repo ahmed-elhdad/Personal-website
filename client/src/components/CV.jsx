@@ -53,7 +53,7 @@ export default function CV() {
           </p>
 
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="../api/client.js" download className="btn-primary">
+            <a href="/api/cv/download" download className="btn-primary">
               <Download size={16} /> Download PDF
             </a>
             <a href="/api/cv/download" target="_blank" rel="noreferrer" className="btn-outline">
