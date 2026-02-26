@@ -34,6 +34,3 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/skills", skillRoutes);
 app.use("/api/cv", cvRoutes);
 app.use(errorHandler);
-
-// ✅ Export for Vercel — do NOT call app.listen()
-module.exports = app;
