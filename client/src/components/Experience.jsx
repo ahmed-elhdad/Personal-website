@@ -25,15 +25,14 @@ const experience = [
   },
 ];
 
-const education = [
-  {
-    num: "🎓",
-    date: "2018 — 2022",
-    role: "Bachelor's in Computer Science",
-    company: "Your University",
-    desc: "Graduated with honors. Focused on algorithms, data structures, software engineering, and distributed systems.",
-  },
-];
+// const education = [
+//   {
+//     num: '🎓', date: '2018 — 2022',
+//     role: "Bachelor's in Computer Science",
+//     company: 'Your University',
+//     desc: 'Graduated with honors. Focused on algorithms, data structures, software engineering, and distributed systems.',
+//   },
+// ];
 
 export default function Experience() {
   const [ref, inView] = useInView(0.1);

@@ -156,17 +156,17 @@ export default function Hero({ projectCount }) {
           {[
             {
               icon: <Github size={18} />,
-              href: "https://github.com",
+              href: "https://github.com/ahmed-elhdad",
               label: "GitHub",
             },
             {
               icon: <Linkedin size={18} />,
-              href: "https://linkedin.com",
+              href: "https://www.linkedin.com/in/ahmed-alhdad/",
               label: "LinkedIn",
             },
             {
               icon: <Mail size={18} />,
-              href: "mailto:ahalhdad@gmail.com",
+              href: "mailto:ahalhdad2023@gmail.com",
               label: "Email",
             },
           ].map((s) => (

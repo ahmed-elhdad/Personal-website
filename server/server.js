@@ -1,38 +1,60 @@
-const express = require("express");
-const cors = require("cors");
-const { connectDB, initDirs } = require("./config/db");
-const { errorHandler } = require("./middleware/errorHandler");
-const config = require("./config");
+const express = require('express');
+const cors    = require('cors');
 
-// routes
-const authRoutes = require("./routes/auth");
-const projectRoutes = require("./routes/projects");
-const skillRoutes = require("./routes/skills");
-const cvRoutes = require("./routes/cv");
+const config                = require('./config');
+const { connect, initDirs } = require('./config/db');
+const { errorHandler }      = require('./middleware/errorHandler');
 
+const authRoutes    = require('./routes/auth');
+const projectRoutes = require('./routes/projects');
+const skillRoutes   = require('./routes/skills');
+const cvRoutes      = require('./routes/cv');
+
+// ─── App ──────────────────────────────────────────────────────────────────────
 const app = express();
 
-app.use(cors({ origin: process.env.CLIENT_URL || "*", credentials: true }));
+app.use(cors({ origin: process.env.CLIENT_URL || '*', credentials: true }));
 app.use(express.json());
 
-// Connect to DB on every cold start (cached inside connectDB)
-app.use(async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (err) {
-    next(err);
+// ─── Connect to MongoDB on first request (cached after that) ──────────────────
+let dbReady = false;
+app.use(async (_req, _res, next) => {
+  if (!dbReady) {
+    try {
+      initDirs();
+      await connect();
+      dbReady = true;
+    } catch (err) {
+      return next(err);
+    }
   }
+  next();
 });
 
-app.get("/api/health", (_req, res) =>
-  res.json({ status: "ok", timestamp: new Date() }),
+// ─── Routes ───────────────────────────────────────────────────────────────────
+app.get('/api/health', (_req, res) =>
+  res.json({ status: 'ok', timestamp: new Date() })
 );
-app.get('/',(req,res)=>{
-  res.send('Hello World!');
-})
-app.use("/api/auth", authRoutes);
-app.use("/api/projects", projectRoutes);
-app.use("/api/skills", skillRoutes);
-app.use("/api/cv", cvRoutes);
+
+app.use('/api/auth',     authRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/skills',   skillRoutes);
+app.use('/api/cv',       cvRoutes);
+
+// ─── Error handler ────────────────────────────────────────────────────────────
 app.use(errorHandler);
+
+// ─── Local development only ───────────────────────────────────────────────────
+if (require.main === module) {
+  initDirs();
+  connect().then(() => {
+    app.listen(config.port, () => {
+      console.log(`\n🚀 Portfolio API  →  http://localhost:${config.port}`);
+      console.log(`📧 Admin email   :  ${config.admin.email}`);
+      console.log(`🔑 Default pass  :  Admin@123!\n`);
+    });
+  });
+}
+
+// ─── Export for Vercel ────────────────────────────────────────────────────────
+module.exports = app;
