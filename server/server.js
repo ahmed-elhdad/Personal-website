@@ -28,7 +28,9 @@ app.use(async (req, res, next) => {
 app.get("/api/health", (_req, res) =>
   res.json({ status: "ok", timestamp: new Date() }),
 );
-
+app.get('/',(req,res)=>{
+  res.send('Hello World!');
+})
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/skills", skillRoutes);
