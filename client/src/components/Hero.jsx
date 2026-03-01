@@ -161,7 +161,7 @@ export default function Hero({ projectCount }) {
             },
             {
               icon: <Linkedin size={18} />,
-              href: "https://www.linkedin.com/in/ahmed-alhdad/",
+              href: "https://linkedin.com/in/ahmed-alhdad",
               label: "LinkedIn",
             },
             {

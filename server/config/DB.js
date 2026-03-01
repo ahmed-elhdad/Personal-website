@@ -1,6 +1,8 @@
-const fs       = require('fs');
-const mongoose = require('mongoose');
-const config   = require('./index');
+const fs     = require('fs');
+const path   = require('path');
+const config = require('./index');
+
+const { dataDir, cvDir, uploadsDir, projectsFile, skillsFile } = config.paths;
 
 const DEFAULT_SKILLS = [
   { category: 'Frontend',       icon: '🎨', skills: ['React', 'Next.js', 'TypeScript', 'JavaScript', 'Tailwind CSS', 'HTML5', 'CSS3'] },
@@ -10,45 +12,27 @@ const DEFAULT_SKILLS = [
   { category: 'Tools',          icon: '🛠️', skills: ['VS Code', 'Figma', 'Postman', 'Jest', 'Agile/Scrum'] },
 ];
 
-// ─── Cache flag — persists across requests in the same serverless instance ────
-let isConnected = false;
-
-/**
- * Connect to MongoDB. Safe to call on every request — skips if already connected.
- */
-async function connect() {
-  // Already connected — reuse the existing connection
-  if (isConnected || mongoose.connection.readyState === 1) {
-    isConnected = true;
-    return;
-  }
-
-  await mongoose.connect(config.mongoUri, {
-    serverSelectionTimeoutMS: 8000,
-    socketTimeoutMS: 45000,
-  });
-
-  isConnected = true;
-  console.log('🍃 MongoDB connected');
-
-  // Seed default skills only if collection is empty
-  const SkillCategory = require('../models/SkillCategory');
-  const count = await SkillCategory.countDocuments();
-  if (count === 0) {
-    await SkillCategory.insertMany(DEFAULT_SKILLS);
-    console.log('🌱 Default skills seeded');
-  }
-}
-
-/**
- * Ensure local upload/cv directories exist.
- * On Vercel these point to /tmp which is always writable.
- */
-function initDirs() {
-  const { cvDir, uploadsDir, dataDir } = config.paths;
+function init() {
+  // Create directories
   [dataDir, cvDir, uploadsDir].forEach(dir => {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   });
+
+  // Seed default JSON files if they don't exist
+  if (!fs.existsSync(projectsFile))
+    fs.writeFileSync(projectsFile, JSON.stringify([], null, 2));
+
+  if (!fs.existsSync(skillsFile))
+    fs.writeFileSync(skillsFile, JSON.stringify(DEFAULT_SKILLS, null, 2));
 }
 
-module.exports = { connect, initDirs };
+function readJSON(file, fallback = []) {
+  try { return JSON.parse(fs.readFileSync(file, 'utf8')); }
+  catch { return fallback; }
+}
+
+function writeJSON(file, data) {
+  fs.writeFileSync(file, JSON.stringify(data, null, 2));
+}
+
+module.exports = { init, readJSON, writeJSON };

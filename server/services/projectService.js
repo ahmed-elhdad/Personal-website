@@ -1,100 +1,83 @@
-const Project = require('../models/Project');
+const { v4: uuidv4 } = require('uuid');
+const { readJSON, writeJSON } = require('../config/db');
+const config = require('../config');
 
-/**
- * Return all projects sorted newest first.
- * @returns {Promise<{ projects: object[], total: number }>}
- */
-async function getAll() {
-  const projects = await Project.find().sort({ createdAt: -1 }).lean({ virtuals: true });
+const file = () => config.paths.projectsFile;
+
+function getAll() {
+  const projects = readJSON(file(), []);
   return { projects, total: projects.length };
 }
 
-/**
- * Return a single project by MongoDB _id.
- * Throws 404 if not found.
- * @param {string} id
- */
-async function getById(id) {
-  const project = await Project.findById(id).lean({ virtuals: true });
+function getById(id) {
+  const projects = readJSON(file(), []);
+  const project  = projects.find(p => p.id === id);
   if (!project) {
-    const err = new Error('Project not found');
-    err.status = 404;
-    throw err;
+    const e = new Error('Project not found');
+    e.status = 404;
+    throw e;
   }
   return project;
 }
 
-/**
- * Create and persist a new project.
- * @param {object} fields
- * @param {string|null} thumbnailFilename
- * @returns {Promise<{ project: object }>}
- */
-async function create({ title, description, tech, github, live, emoji }, thumbnailFilename) {
+function create({ title, description, tech, github, live, emoji }, thumbnailFilename) {
   if (!title || !description) {
-    const err = new Error('Title and description are required');
-    err.status = 400;
-    throw err;
+    const e = new Error('Title and description are required');
+    e.status = 400;
+    throw e;
   }
-
-  const project = await Project.create({
+  const now      = new Date().toISOString();
+  const projects = readJSON(file(), []);
+  const project  = {
+    id:          uuidv4(),
     title,
     description,
-    tech:      parseTech(tech),
-    github:    github    || null,
-    live:      live      || null,
-    emoji:     emoji     || '💻',
-    thumbnail: thumbnailFilename ? `/uploads/${thumbnailFilename}` : null,
-  });
-
-  return { project: project.toJSON() };
+    tech:        parseTech(tech),
+    github:      github || null,
+    live:        live   || null,
+    emoji:       emoji  || '💻',
+    thumbnail:   thumbnailFilename ? '/uploads/' + thumbnailFilename : null,
+    createdAt:   now,
+    updatedAt:   now,
+  };
+  projects.unshift(project);
+  writeJSON(file(), projects);
+  return { project };
 }
 
-/**
- * Update an existing project (partial update).
- * @param {string} id
- * @param {object} fields
- * @returns {Promise<{ project: object }>}
- */
-async function update(id, { title, description, tech, github, live, emoji }) {
-  const changes = {
+function update(id, { title, description, tech, github, live, emoji }) {
+  const projects = readJSON(file(), []);
+  const idx      = projects.findIndex(p => p.id === id);
+  if (idx === -1) {
+    const e = new Error('Project not found');
+    e.status = 404;
+    throw e;
+  }
+  projects[idx] = {
+    ...projects[idx],
     ...(title       && { title }),
     ...(description && { description }),
     ...(tech        && { tech: parseTech(tech) }),
     ...(github !== undefined && { github }),
     ...(live   !== undefined && { live }),
     ...(emoji       && { emoji }),
+    updatedAt: new Date().toISOString(),
   };
-
-  const project = await Project.findByIdAndUpdate(
-    id,
-    { $set: changes },
-    { new: true, runValidators: true }
-  ).lean({ virtuals: true });
-
-  if (!project) {
-    const err = new Error('Project not found');
-    err.status = 404;
-    throw err;
-  }
-
-  return { project };
+  writeJSON(file(), projects);
+  return { project: projects[idx] };
 }
 
-/**
- * Delete a project by id.
- * @param {string} id
- */
-async function remove(id) {
-  const result = await Project.findByIdAndDelete(id);
-  if (!result) {
-    const err = new Error('Project not found');
-    err.status = 404;
-    throw err;
+function remove(id) {
+  const projects = readJSON(file(), []);
+  const filtered = projects.filter(p => p.id !== id);
+  if (filtered.length === projects.length) {
+    const e = new Error('Project not found');
+    e.status = 404;
+    throw e;
   }
+  writeJSON(file(), filtered);
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 function parseTech(tech) {
   if (!tech) return [];
   if (Array.isArray(tech)) return tech;

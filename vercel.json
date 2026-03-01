@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/server.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "backend/config/**",
+          "backend/middleware/**",
+          "backend/models/**",
+          "backend/routes/**",
+          "backend/services/**",
+          "backend/package.json"
+        ]
+      }
+    }
+  ],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/backend/server.js" }
+  ]
+}

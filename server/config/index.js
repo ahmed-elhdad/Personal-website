@@ -1,14 +1,13 @@
 require('dotenv').config();
 const path = require('path');
 
-// On Vercel the filesystem is read-only except /tmp
-const isVercel   = !!process.env.VERCEL;
-const uploadBase = isVercel ? '/tmp' : path.join(__dirname, '..', 'data');
+// Vercel filesystem is read-only except /tmp — use that for data storage
+const isVercel = !!process.env.VERCEL;
+const dataBase = isVercel ? '/tmp' : path.join(__dirname, '..', 'data');
 
 const config = {
   port:      process.env.PORT       || 5000,
   clientUrl: process.env.CLIENT_URL || '*',
-  mongoUri:  process.env.MONGO_URI  || 'mongodb://127.0.0.1:27017/portfolio',
 
   jwt: {
     secret:    process.env.JWT_SECRET || 'your-super-secret-key-change-in-production',
@@ -23,9 +22,11 @@ const config = {
   },
 
   paths: {
-    dataDir:    uploadBase,
-    cvDir:      path.join(uploadBase, 'cv'),
-    uploadsDir: path.join(uploadBase, 'uploads'),
+    dataDir:       dataBase,
+    projectsFile:  path.join(dataBase, 'projects.json'),
+    skillsFile:    path.join(dataBase, 'skills.json'),
+    cvDir:         path.join(dataBase, 'cv'),
+    uploadsDir:    path.join(dataBase, 'uploads'),
   },
 
   upload: {

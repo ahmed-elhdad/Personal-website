@@ -1,47 +1,37 @@
 const express        = require('express');
 const projectService = require('../services/projectService');
-const { authenticate }  = require('../middleware/auth');
-const { imageUpload }   = require('../middleware/upload');
+const { authenticate } = require('../middleware/auth');
+const { imageUpload }  = require('../middleware/upload');
 
 const router = express.Router();
 
-// GET /api/projects
-router.get('/', async (_req, res, next) => {
-  try {
-    const result = await projectService.getAll();
-    res.json(result);
-  } catch (err) { next(err); }
+router.get('/', (_req, res, next) => {
+  try { res.json(projectService.getAll()); }
+  catch (err) { next(err); }
 });
 
-// GET /api/projects/:id
-router.get('/:id', async (req, res, next) => {
-  try {
-    const project = await projectService.getById(req.params.id);
-    res.json(project);
-  } catch (err) { next(err); }
+router.get('/:id', (req, res, next) => {
+  try { res.json(projectService.getById(req.params.id)); }
+  catch (err) { next(err); }
 });
 
-// POST /api/projects  (protected + optional thumbnail)
-router.post('/', authenticate, imageUpload.single('thumbnail'), async (req, res, next) => {
+router.post('/', authenticate, imageUpload.single('thumbnail'), (req, res, next) => {
   try {
-    const thumbnailFilename = req.file?.filename || null;
-    const { project } = await projectService.create(req.body, thumbnailFilename);
+    const { project } = projectService.create(req.body, req.file?.filename || null);
     res.status(201).json({ project, message: 'Project created' });
   } catch (err) { next(err); }
 });
 
-// PUT /api/projects/:id  (protected)
-router.put('/:id', authenticate, async (req, res, next) => {
+router.put('/:id', authenticate, (req, res, next) => {
   try {
-    const { project } = await projectService.update(req.params.id, req.body);
+    const { project } = projectService.update(req.params.id, req.body);
     res.json({ project, message: 'Project updated' });
   } catch (err) { next(err); }
 });
 
-// DELETE /api/projects/:id  (protected)
-router.delete('/:id', authenticate, async (req, res, next) => {
+router.delete('/:id', authenticate, (req, res, next) => {
   try {
-    await projectService.remove(req.params.id);
+    projectService.remove(req.params.id);
     res.json({ message: 'Project deleted' });
   } catch (err) { next(err); }
 });

@@ -1,53 +1,42 @@
-const SkillCategory = require('../models/SkillCategory');
+const { v4: uuidv4 } = require('uuid');
+const { readJSON, writeJSON } = require('../config/db');
+const config = require('../config');
 
-/**
- * Return all skill categories.
- * @returns {Promise<{ skills: object[] }>}
- */
-async function getAll() {
-  const skills = await SkillCategory.find().lean({ virtuals: true });
+const file = () => config.paths.skillsFile;
+
+function getAll() {
+  const skills = readJSON(file(), []);
   return { skills };
 }
 
-/**
- * Add a skill to an existing category, or create a new one.
- * Silently ignores duplicates.
- * @param {string} category
- * @param {string} skillName
- * @returns {Promise<{ skills: object[] }>}
- */
-async function addSkill(category, skillName) {
+function addSkill(category, skillName) {
   if (!category || !skillName) {
-    const err = new Error('Category and skill name are required');
-    err.status = 400;
-    throw err;
+    const e = new Error('Category and skill name are required');
+    e.status = 400;
+    throw e;
   }
-
-  await SkillCategory.findOneAndUpdate(
-    { category },
-    // $addToSet prevents duplicates; upsert creates the category if it doesn't exist
-    { $addToSet: { skills: skillName } },
-    { upsert: true, new: true }
-  );
-
-  const { skills } = await getAll();
-  return { skills };
+  const skills = readJSON(file(), []);
+  const cat    = skills.find(s => s.category === category);
+  if (cat) {
+    if (!cat.skills.includes(skillName)) {
+      cat.skills.push(skillName);
+      writeJSON(file(), skills);
+    }
+  } else {
+    skills.push({ id: uuidv4(), category, icon: '💡', skills: [skillName] });
+    writeJSON(file(), skills);
+  }
+  return { skills: readJSON(file(), []) };
 }
 
-/**
- * Remove a skill from a category.
- * @param {string} category
- * @param {string} skillName
- * @returns {Promise<{ skills: object[] }>}
- */
-async function removeSkill(category, skillName) {
-  await SkillCategory.findOneAndUpdate(
-    { category },
-    { $pull: { skills: skillName } }
-  );
-
-  const { skills } = await getAll();
-  return { skills };
+function removeSkill(category, skillName) {
+  const skills = readJSON(file(), []);
+  const cat    = skills.find(s => s.category === category);
+  if (cat) {
+    cat.skills = cat.skills.filter(s => s !== skillName);
+    writeJSON(file(), skills);
+  }
+  return { skills: readJSON(file(), []) };
 }
 
 module.exports = { getAll, addSkill, removeSkill };
