@@ -2,7 +2,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Linkedin, Github, MapPin, Send } from "lucide-react";
 import { useInView } from "../hooks/useInView";
-
 const contacts = [
   {
     icon: <Mail size={18} />,
@@ -29,15 +28,46 @@ const contacts = [
     href: null,
   },
 ];
-
 export default function Contact() {
-  const [ref, inView] = useInView(0.1);
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
+  const handleSend = async () => {
+    try {
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: form.email,
+        subject: form.subject,
+        html: form.message,
+      };
+
+      // const transporter = nodemailer.createTransport({
+      //   service: "gmail",
+      //   auth: {
+      //     user: process.env.EMAIL_USER,
+      //     pass: process.env.EMAIL_PASS,
+      //   },
+      // });
+      // transporter.sendMail(mailOptions, (error, info) => {
+      //   if (error) {
+      //     console.error("Error: ", error);
+      //     return res.status(500).json({ error: "Failed to send email" });
+      //   } else {
+      //     console.log("Sent successfully:", info.response);
+      //     return res
+      //       .status(200)
+      //       .json({ message: "Reset code sent to email", code: code }); // For testing only, remove in production
+      //   }
+      // });
+    } catch (err) {
+      setError("The message doesn't send");
+    }
+  };
+  const [ref, inView] = useInView(0.1),
+    [error, setError] = useState(""),
+    [form, setForm] = useState({
+      name: "",
+      email: "",
+      subject: "",
+      message: "",
+    });
   const [status, setStatus] = useState(null);
 
   const handle = (e) =>
@@ -201,6 +231,7 @@ export default function Contact() {
             <button
               type="submit"
               className="btn-primary"
+              onClick={handleSend}
               style={{ width: "fit-content" }}
             >
               <Send size={15} /> Send Message

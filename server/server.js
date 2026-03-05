@@ -34,8 +34,6 @@ app.use(errorHandler);
 if (require.main === module) {
   app.listen(config.port, () => {
     console.log('\n🚀 Portfolio API  →  http://localhost:' + config.port);
-    console.log('📧 Admin email   :  ' + config.admin.email);
-    console.log('🔑 Default pass  :  Admin@123!\n');
   });
 }
 
