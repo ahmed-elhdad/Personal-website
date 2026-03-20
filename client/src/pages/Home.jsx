@@ -86,6 +86,19 @@ export default function Home() {
         createdAt: "2026-03-01T21:45:23.380Z",
         updatedAt: "2026-03-01T21:45:23.380Z",
       },
+      {
+        id: "82d1f5ce-e46d-482d-a7c3-5c58fc3bb875",
+        title: "Fraud Detection ",
+        description:
+          "This project implements a machine learning-based fraud detection system. It includes a training pipeline to build and evaluate a fraud prediction model, and a Streamlit web application for real-time fraud prediction on individual transactions.",
+        tech: ["Python", "pandas", "streamlit", "matplotlib", "scikit-learn"],
+        github: "https://github.com/ahmed-elhdad/Fraud-Detection",
+        live: null,
+        emoji: "🤖",
+        thumbnail: null,
+        createdAt: "2026-03-01T21:45:23.380Z",
+        updatedAt: "2026-03-01T21:45:23.380Z",
+      },
     ];
 
   return (

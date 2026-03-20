@@ -136,7 +136,7 @@ export default function Hero({ projectCount }) {
             View Projects <ArrowRight size={16} />
           </button>
           <a
-            href="/api/cv/download"
+            href="../assets/resume.pdf"
             download
             className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg font-medium
                        text-sm border transition-all duration-300 hover:-translate-y-0.5
