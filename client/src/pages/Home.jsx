@@ -47,6 +47,19 @@ export default function Home() {
       },
     ],
     projects = [
+            {
+        id: "0330871a-6394-4d5e-b02b-63706be0c304",
+        title: "Personality Types Prediction App",
+        description:
+          "A machine learning project that predicts Myers-Briggs Type Indicator (MBTI) personality types based on text input using a Logistic Regression model.",
+        tech: ["Python", "pandas", "matplotlib", "scikit-learn",'streamlit'],
+        github: "https://github.com/ahmed-elhdad/personality_types_prediction",
+        live: null,
+        emoji: "🤖",
+        thumbnail: null,
+        createdAt: "2026-03-21T21:47:22.764Z",
+        updatedAt: "2026-03-22T21:47:22.764Z",
+      },
       {
         id: "0330871a-6394-4d5e-b02b-63706be0c304",
         title: "TV Advertising vs Sales",
