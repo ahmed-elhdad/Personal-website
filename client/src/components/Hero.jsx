@@ -64,22 +64,22 @@ export default function Hero({ projectCount }) {
       >
         {/* Badge */}
         <motion.div variants={fadeUp} className="mb-7">
-          <span
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full
-                           text-[11px] font-semibold tracking-[0.14em] uppercase border"
-            style={{
-              background: "rgba(100,255,218,0.06)",
-              borderColor: "rgba(100,255,218,0.22)",
-              color: "#64ffda",
-            }}
-          >
-            <span
-              className="w-1.5 h-1.5 rounded-full bg-[#64ffda]"
-              style={{ animation: "pulse-dot 2s ease-in-out infinite" }}
-            />
-            Available for Work
-          </span>
-        </motion.div>
+  <span
+    className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full
+               text-[11px] font-semibold tracking-[0.14em] uppercase border"
+    style={{
+      background: "rgba(255,100,100,0.06)",
+      borderColor: "rgba(255,100,100,0.22)",
+      color: "#ff6464",
+    }}
+  >
+    <span
+      className="w-1.5 h-1.5 rounded-full bg-[#ff6464]"
+      style={{ animation: "pulse-dot 2s ease-in-out infinite" }}
+    />
+    Currently Unavailable for Work
+  </span>
+</motion.div>
 
         {/* Headline */}
         <motion.h1
