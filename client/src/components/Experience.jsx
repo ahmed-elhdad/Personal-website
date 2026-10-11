@@ -2,20 +2,25 @@ import { motion } from 'framer-motion';
 import { useInView } from '../hooks/useInView';
 
 const experience = [
-  {
-    num: '01', date: '2023 — Present',
-    role: 'Software Engineer', company: 'Current Company · Full-time',
-    desc: 'Leading development of core platform features, improving system performance by 40%, and mentoring junior developers. Driving architectural decisions for microservices migration.',
+   {
+    num: '01', date: '2022 — 2023',
+    role: 'student', company: '',
+    desc: 'Started my journey of learning programming.',
   },
-  {
-    num: '02', date: '2022 — 2023',
-    role: 'Junior Software Engineer', company: 'Previous Company · Full-time',
-    desc: 'Built and maintained RESTful APIs, collaborated on frontend features using React, and participated in agile sprints and code reviews.',
+   {
+    num: '01', date: '2024 — 2025',
+    role: 'partner', company: 'show',
+    desc: 'Participated in the show of work in my government and gained the approval of the Undersecretary and judges',
   },
-  {
-    num: '03', date: '2021 — 2022',
-    role: 'Frontend Intern', company: 'Startup · Internship',
-    desc: 'Developed responsive web interfaces, integrated REST APIs, and contributed to a UI component library used across all company products.',
+     {
+    num: '01', date: '2025 — 2026',
+    role: 'student', company: 'show',
+    desc: 'Finished my prep level with a total score of 273.5/280, around 97.5%',
+  },
+   {
+    num: '01', date: '2026 — 2027',
+    role: 'STEM student', company: 'show',
+    desc: 'Accepted into STEM schools in Egypt, which take 3000 students across Egypt after tests in Math, English, Science, and IQ, then enter the interview with a motivation letter',
   },
 ];
 
