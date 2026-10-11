@@ -4,17 +4,17 @@ import { useInView } from '../hooks/useInView';
 const experience = [
    {
     num: '01', date: '2022 — 2023',
-    role: 'student', company: '',
+    role: 'Student', company: '',
     desc: 'Started my journey of learning programming.',
   },
    {
     num: '01', date: '2024 — 2025',
-    role: 'partner', company: 'show',
+    role: 'Partner', company: 'show',
     desc: 'Participated in the show of work in my government and gained the approval of the Undersecretary and judges',
   },
      {
     num: '01', date: '2025 — 2026',
-    role: 'student', company: 'show',
+    role: 'Student', company: 'show',
     desc: 'Finished my prep level with a total score of 273.5/280, around 97.5%',
   },
    {
